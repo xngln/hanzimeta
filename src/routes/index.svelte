@@ -1,5 +1,4 @@
 <script lang="ts">
-    import { onMount } from "svelte";
     import { createClient, setClient, operationStore, query } from '@urql/svelte';
 
     const client = createClient({
@@ -8,8 +7,8 @@
 
     setClient(client);
 
-    let first = 10;
-    let hzPage = operationStore(`
+    let first = 30;
+    let hzQuery = operationStore(`
         query HanziConnection($first: Int) {
             hanziConnection(first: $first) {
                 totalCount, 
@@ -21,6 +20,12 @@
                     node {
                         id,
                         simplified,
+                        pinyin,
+                        traditional,
+                        japanese,
+                        gsNum,
+                        jundaFreq,
+                        hskLvl
                     },
                     cursor
                 }
@@ -29,38 +34,48 @@
         { first }
     );
 
-    query(hzPage)
+    query(hzQuery)
 </script>
+<div>
+    <div class="my-5">
+        <h1 class="text-center text-2xl">
+            hanzimeta
+        </h1>
+    </div>
 
-<h1 class="text-2xl">
-    hanzimeta
-</h1>
-<table class="table-auto">
-    <thead>
-        <tr>
-            <th>hanzi</th>
-            <th>pinyin</th>
-            <th>traditional</th>
-            <th>kanji</th>
-            <th>general standard #</th>
-            <th>frequency rank</th>
-            <th>hsk level</th>
-        </tr>
-    </thead>
-    <tbody>
-        <!-- {#each data.data.hanziConnection.edges as edge}
-            <tr>
-                <td>{edge.node.simplified}</td>
-                <td>{row.data().pinyin}</td>
-                <td>{row.data().traditional}</td>
-                <td>{row.data().kanji}</td>
-                <td>{row.data().gs_num}</td>
-                <td>{row.data().freq}</td>
-                <td>{row.data().hsk_lvl}</td>
-            </tr>
-        {/each} -->
-    </tbody>
-</table>
+    {#if $hzQuery.fetching}
+    <p>Loading...</p>
+    {:else}
+    <div class="flex place-content-evenly mb-10">
+        <table class="table-auto border-collapse border">
+            <thead>
+                <tr>
+                    <th class="border">hanzi</th>
+                    <th class="border">pinyin</th>
+                    <th class="border">traditional</th>
+                    <th class="border">kanji</th>
+                    <th class="border">general standard #</th>
+                    <th class="border">frequency rank</th>
+                    <th class="border">hsk level</th>
+                </tr>
+            </thead>
+            <tbody class="overflow-auto">
+                {#each $hzQuery.data.hanziConnection.edges as edge}
+                    <tr>
+                        <td class="border">{edge.node.simplified}</td>
+                        <td class="border">{edge.node.pinyin}</td>
+                        <td class="border">{edge.node.traditional}</td>
+                        <td class="border">{edge.node.japanese}</td>
+                        <td class="border">{edge.node.gsNum}</td>
+                        <td class="border">{edge.node.jundaFreq}</td>
+                        <td class="border">{edge.node.hskLvl}</td>
+                    </tr>
+                {/each}
+            </tbody>
+        </table>
+    </div>
+    {/if}
+</div>
 
 <style>
 
