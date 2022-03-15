@@ -3,7 +3,7 @@
     import { createClient, setClient, operationStore, query } from '@urql/svelte';
 
     const client = createClient({
-        url: String(import.meta.env.VITE_GQL_API),
+        url: String(import.meta.env.VITE_GQL_API_URL),
     });
 
     setClient(client);
