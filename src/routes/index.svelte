@@ -75,7 +75,7 @@
         $hanzi.variables.searchValue = searchValue;
         $hanzi.reexecute();
         datasource = "search";
-        console.log(hanzi)
+        $hanzi.data.hanzi = $hanzi.data.hanzi;
     }
 </script>
 <div class="h-screen">
