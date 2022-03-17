@@ -3,5 +3,8 @@ module.exports = {
   theme: {
     extend: {},
   },
-  plugins: [],
+  daisyui: {
+    themes: ["light", "luxury"]
+  },
+  plugins: [require("@tailwindcss/typography"), require("daisyui")], // require daisy ui after typography
 }
