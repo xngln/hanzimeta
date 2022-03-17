@@ -77,6 +77,11 @@
         datasource = "search";
         $hanzi.data.hanzi = $hanzi.data.hanzi;
     }
+
+    function clearSearch() {
+        datasource = "page"
+        searchValue = ""
+    }
 </script>
 <div class="h-screen">
     <div class="my-5 static w-full">
@@ -93,8 +98,9 @@
             <input bind:value={searchValue} type="text" placeholder="search" class="input input-bordered w-1/6 h-8 max-w-xs">
             <button type="submit">search</button>
         </form>
+        <button on:click={clearSearch}>clear</button>
         <div class="overflow-auto overscroll-contain place-self-center w-4/5">
-            <table class="table overflow-x-scroll">
+            <table class="table">
                 <thead class="sticky top-0">
                     <tr>
                         <!-- not sure why tailwind inserts '.table th:first-child { position: sticky } if I make thead sticky' -->
@@ -108,7 +114,7 @@
                         <th >hsk level</th>
                     </tr>
                 </thead>
-                <tbody class="overflow-auto overscroll-contain">
+                <tbody>
                     {#if datasource == "page"} 
                         {#each $hzPage.data.hanziConnection.edges as edge}
                             <tr>
