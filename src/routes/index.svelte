@@ -1,8 +1,10 @@
 <script lang="ts">
-    import { onMount } from 'svelte';
     import { createClient, setClient, operationStore, query } from '@urql/svelte';
     import Search from '$lib/icons/search.svelte'
     import X from '$lib/icons/x.svelte'
+    import Pagination from '$lib/components/pagination.svelte';
+    import { onMount } from 'svelte';
+    import { page } from '$app/stores';
 
     const client = createClient({
         url: String(import.meta.env.VITE_GQL_API_URL),
@@ -13,14 +15,18 @@
     // TODO: make this typed (either page or search results, something like that)
     let datasource = "page";
 
+    let pageNum = $page.url.searchParams.has('page') ? $page.url.searchParams.get('page') : 1;
+
     let first = 30;
+    let cursor = btoa("page " + pageNum);
     let hzPage = operationStore(`
-        query HanziConnection($first: Int) {
-            hanziConnection(first: $first) {
+        query HanziConnection($first: Int, $cursor: String) {
+            hanziConnection(first: $first, after: $cursor) {
                 totalCount, 
                 pageInfo {
                     endCursor,
-                    hasNextPage
+                    hasNextPage,
+                    hasPrevPage
                 },
                 edges {
                     node {
@@ -37,7 +43,7 @@
                 }
             }
         }`, 
-        { first }
+        { first, cursor }
     );
     query(hzPage)
 
@@ -57,34 +63,37 @@
         }`,
         { searchValue }
     )
-    query(hanzi)
+    query(hanzi);
 
     $: hasNextPage = $hzPage.data?.hanziConnection.pageInfo.hasNextPage;
     $: hasPrevPage = $hzPage.data?.hanziConnection.pageInfo.hasPrevPage;
-
     
     function nextPage() {
         let nextCursor = $hzPage.data.hanziConnection.pageInfo.endCursor;
-        console.log(nextCursor);
-
+        console.log("next");
     }
 
     function prevPage() {
         console.log("prev");
     }
 
+    $: pageNumBeforeSearch = pageNum;
+
     function searchHanzi() {
         $hanzi.variables.searchValue = searchValue;
         $hanzi.reexecute();
         datasource = "search";
         $hanzi.data.hanzi = $hanzi.data.hanzi;
+        pageNum = 1;
     }
 
     function clearSearch() {
-        datasource = "page"
-        searchValue = ""
+        datasource = "page";
+        searchValue = "";
+        pageNum = pageNumBeforeSearch;
     }
 </script>
+
 <div class="h-screen">
     <div class="my-5 static w-full">
         <h1 class="text-center text-2xl">
@@ -108,12 +117,12 @@
                         <!-- not sure why tailwind inserts '.table th:first-child { position: sticky } if I make thead sticky' -->
                         <!-- keep this inline style here until I figure that out -->
                         <th style="position: relative">hanzi</th>
+                        <th >freq.</th>
+                        <th >G.S. #</th>
+                        <th >hsk lvl</th>
                         <th >pinyin</th>
-                        <th >traditional</th>
+                        <th >trad.</th>
                         <th >kanji</th>
-                        <th >general standard #</th>
-                        <th >frequency rank</th>
-                        <th >hsk level</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -121,49 +130,44 @@
                         {#each $hzPage.data.hanziConnection.edges as edge}
                             <tr>
                                 <td>{edge.node.simplified}</td>
+                                <td>{edge.node.jundaFreq}</td>
+                                <td>{edge.node.gsNum}</td>
+                                <td>{edge.node.hskLvl}</td>
                                 <td>{edge.node.pinyin}</td>
                                 <td>{edge.node.traditional}</td>
                                 <td>{edge.node.japanese}</td>
-                                <td>{edge.node.gsNum}</td>
-                                <td>{edge.node.jundaFreq}</td>
-                                <td>{edge.node.hskLvl}</td>
                             </tr>
                         {/each}
                     {:else}
                         {#each $hanzi.data.hanzi as hanzi}
                             <tr>
                                 <td>{hanzi.simplified}</td>
-                                <td>{hanzi.pinyin}</td>
-                                <td>{hanzi.traditional}</td>
-                                <td>{hanzi.japanese}</td>
-                                {#if hanzi.gsNum == null}
-                                    <td>n/a</td>
-                                {:else}
-                                    <td>{hanzi.gsNum}</td>
-                                {/if}
                                 {#if hanzi.jundaFreq == null}
                                     <td>n/a</td>
                                 {:else}
                                     <td>{hanzi.jundaFreq}</td>
+                                {/if}
+                                {#if hanzi.gsNum == null}
+                                    <td>n/a</td>
+                                {:else}
+                                    <td>{hanzi.gsNum}</td>
                                 {/if}
                                 {#if hanzi.hskLvl == null}
                                     <td>n/a</td>
                                 {:else}
                                     <td>{hanzi.hskLvl}</td>
                                 {/if}
+                                <td>{hanzi.pinyin}</td>
+                                <td>{hanzi.traditional}</td>
+                                <td>{hanzi.japanese}</td>
                             </tr>
                         {/each} 
                     {/if}
                 </tbody>
             </table>
         </div>
-        <div class="place-self-end mr-24">
-            {#if hasPrevPage}
-                <button on:click={prevPage}>prev</button>
-            {/if}
-            {#if hasNextPage}
-                <button on:click={nextPage}>next</button>
-            {/if}
+        <div class="place-self-center mt-3">
+            <Pagination hasPrevPage={hasPrevPage} hasNextPage={hasNextPage} currPage={pageNum}/>
         </div>
     </div>
     {/if}
