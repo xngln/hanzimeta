@@ -6,5 +6,5 @@ module.exports = {
   daisyui: {
     themes: ["light", "luxury"]
   },
-  plugins: [require("@tailwindcss/typography"), require("daisyui")], // require daisy ui after typography
+  plugins: [require('@tailwindcss/forms'), require("@tailwindcss/typography"), require("daisyui")], // require daisy ui after typography
 }

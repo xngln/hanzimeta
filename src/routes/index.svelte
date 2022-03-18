@@ -1,6 +1,8 @@
 <script lang="ts">
     import { onMount } from 'svelte';
     import { createClient, setClient, operationStore, query } from '@urql/svelte';
+    import Search from '$lib/icons/search.svelte'
+    import X from '$lib/icons/x.svelte'
 
     const client = createClient({
         url: String(import.meta.env.VITE_GQL_API_URL),
@@ -94,11 +96,11 @@
     <p>Loading...</p>
     {:else}
     <div class="relative flex flex-col mb-10 h-4/5 w-full">
-        <form on:submit|preventDefault={searchHanzi}>
-            <input bind:value={searchValue} type="text" placeholder="search" class="input input-bordered w-1/6 h-8 max-w-xs">
-            <button type="submit">search</button>
+        <form class="ml-16 mb-3" on:submit|preventDefault={searchHanzi}>
+            <input bind:value={searchValue} type="text" placeholder="搜索" class="input input-bordered w-1/6 h-8 max-w-xs">
+            <button class="align-middle btn-xs" type="submit"><Search/></button>
+            <button class="align-middle btn-xs justify-end" on:click|preventDefault={clearSearch}><X/></button>
         </form>
-        <button on:click={clearSearch}>clear</button>
         <div class="overflow-auto overscroll-contain place-self-center w-4/5">
             <table class="table">
                 <thead class="sticky top-0">
@@ -134,9 +136,21 @@
                                 <td>{hanzi.pinyin}</td>
                                 <td>{hanzi.traditional}</td>
                                 <td>{hanzi.japanese}</td>
-                                <td>{hanzi.gsNum}</td>
-                                <td>{hanzi.jundaFreq}</td>
-                                <td>{hanzi.hskLvl}</td>
+                                {#if hanzi.gsNum == null}
+                                    <td>n/a</td>
+                                {:else}
+                                    <td>{hanzi.gsNum}</td>
+                                {/if}
+                                {#if hanzi.jundaFreq == null}
+                                    <td>n/a</td>
+                                {:else}
+                                    <td>{hanzi.jundaFreq}</td>
+                                {/if}
+                                {#if hanzi.hskLvl == null}
+                                    <td>n/a</td>
+                                {:else}
+                                    <td>{hanzi.hskLvl}</td>
+                                {/if}
                             </tr>
                         {/each} 
                     {/if}
