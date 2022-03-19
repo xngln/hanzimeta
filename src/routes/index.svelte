@@ -105,13 +105,13 @@
     <p>Loading...</p>
     {:else}
     <div class="relative flex flex-col mb-10 h-4/5 w-full">
-        <form class="ml-16 mb-3" on:submit|preventDefault={searchHanzi}>
-            <input bind:value={searchValue} type="text" placeholder="搜索" class="input input-bordered w-1/6 h-8 max-w-xs">
-            <button class="align-middle btn-xs" type="submit"><Search/></button>
-            <button class="align-middle btn-xs justify-end" on:click|preventDefault={clearSearch}><X/></button>
+        <form class="relative input input-bordered place-self-center mb-3 h-8 max-w-xs w-32 focus-within:ring-1" on:submit|preventDefault={searchHanzi}>
+            <input bind:value={searchValue} type="text" placeholder="search" class="w-24 h-6 border-none focus:ring-0">
+            <button id="search-btn" class="absolute top-0 opacity-60" type="submit"><Search/></button>
+            <button id="clear-btn" class="absolute right-0 opacity-50" on:click|preventDefault={clearSearch}><X/></button>
         </form>
         <div class="overflow-auto overscroll-contain place-self-center w-4/5">
-            <table class="table">
+            <table class="table mx-auto">
                 <thead class="sticky top-0">
                     <tr>
                         <!-- not sure why tailwind inserts '.table th:first-child { position: sticky } if I make thead sticky' -->
@@ -174,5 +174,12 @@
 </div>
 
 <style>
-
+    #search-btn {
+        top: 5px;
+        left: 6px;
+    }
+    #clear-btn {
+        top: 5px;
+        right: 5px;
+    }
 </style>
