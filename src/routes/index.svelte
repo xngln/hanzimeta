@@ -143,9 +143,21 @@
                             {#each $hzPage.data.hanziConnection.edges as edge}
                                 <tr>
                                     <td>{edge.node.simplified}</td>
-                                    <td>{edge.node.jundaFreq}</td>
-                                    <td>{edge.node.gsNum}</td>
-                                    <td>{edge.node.hskLvl}</td>
+                                    {#if edge.node.jundaFreq == null}
+                                        <td>n/a</td>
+                                    {:else}
+                                        <td>{edge.node.jundaFreq}</td>
+                                    {/if}
+                                    {#if edge.node.gsNum == null}
+                                        <td>n/a</td>
+                                    {:else}
+                                        <td>{edge.node.gsNum}</td>
+                                    {/if}
+                                    {#if edge.node.hskLvl == null}
+                                        <td>n/a</td>
+                                    {:else}
+                                        <td>{edge.node.hskLvl}</td>
+                                    {/if}
                                     <td>{edge.node.pinyin}</td>
                                     <td>{edge.node.traditional}</td>
                                     <td>{edge.node.japanese}</td>
