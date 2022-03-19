@@ -15,7 +15,7 @@
     // TODO: make this typed (either page or search results, something like that)
     let datasource = "page";
 
-    let pageNum = $page.url.searchParams.has('page') ? $page.url.searchParams.get('page') : 1;
+    let pageNum = $page.url.searchParams.has('page') ? parseInt($page.url.searchParams.get('page')) : 1;
 
     let first = 30;
     let cursor = btoa("page " + pageNum);
@@ -70,11 +70,24 @@
     
     function nextPage() {
         let nextCursor = $hzPage.data.hanziConnection.pageInfo.endCursor;
-        console.log("next");
+        $hzPage.variables.cursor = nextCursor;
+        $hzPage.reexecute();
+        pageNum += 1;
     }
 
+    // TODO: implement this without offset cursor (less efficient)
     function prevPage() {
-        console.log("prev");
+        let nextCursor = btoa("page " + (pageNum - 1))
+        $hzPage.variables.cursor = nextCursor;
+        $hzPage.reexecute();
+        pageNum -= 1;
+    }
+    
+    function toPage(event) {
+        let nextCursor = btoa("page " + event.detail.page);
+        $hzPage.variables.cursor = nextCursor;
+        $hzPage.reexecute();
+        pageNum = parseInt(event.detail.page);
     }
 
     $: pageNumBeforeSearch = pageNum;
@@ -101,9 +114,6 @@
         </h1>
     </div>
 
-    {#if $hzPage.fetching}
-    <p>Loading...</p>
-    {:else}
     <div class="relative flex flex-col mb-10 h-4/5 w-full">
         <form class="relative input input-bordered place-self-center mb-3 h-8 max-w-xs w-32 focus-within:ring-1" on:submit|preventDefault={searchHanzi}>
             <input bind:value={searchValue} type="text" placeholder="search" class="w-24 h-6 border-none focus:ring-0">
@@ -125,52 +135,55 @@
                         <th >kanji</th>
                     </tr>
                 </thead>
-                <tbody>
-                    {#if datasource == "page"} 
-                        {#each $hzPage.data.hanziConnection.edges as edge}
-                            <tr>
-                                <td>{edge.node.simplified}</td>
-                                <td>{edge.node.jundaFreq}</td>
-                                <td>{edge.node.gsNum}</td>
-                                <td>{edge.node.hskLvl}</td>
-                                <td>{edge.node.pinyin}</td>
-                                <td>{edge.node.traditional}</td>
-                                <td>{edge.node.japanese}</td>
-                            </tr>
-                        {/each}
-                    {:else}
-                        {#each $hanzi.data.hanzi as hanzi}
-                            <tr>
-                                <td>{hanzi.simplified}</td>
-                                {#if hanzi.jundaFreq == null}
-                                    <td>n/a</td>
-                                {:else}
-                                    <td>{hanzi.jundaFreq}</td>
-                                {/if}
-                                {#if hanzi.gsNum == null}
-                                    <td>n/a</td>
-                                {:else}
-                                    <td>{hanzi.gsNum}</td>
-                                {/if}
-                                {#if hanzi.hskLvl == null}
-                                    <td>n/a</td>
-                                {:else}
-                                    <td>{hanzi.hskLvl}</td>
-                                {/if}
-                                <td>{hanzi.pinyin}</td>
-                                <td>{hanzi.traditional}</td>
-                                <td>{hanzi.japanese}</td>
-                            </tr>
-                        {/each} 
-                    {/if}
-                </tbody>
+                {#if $hzPage.fetching}
+                    <p>Loading...</p>
+                {:else}
+                    <tbody>
+                        {#if datasource == "page"} 
+                            {#each $hzPage.data.hanziConnection.edges as edge}
+                                <tr>
+                                    <td>{edge.node.simplified}</td>
+                                    <td>{edge.node.jundaFreq}</td>
+                                    <td>{edge.node.gsNum}</td>
+                                    <td>{edge.node.hskLvl}</td>
+                                    <td>{edge.node.pinyin}</td>
+                                    <td>{edge.node.traditional}</td>
+                                    <td>{edge.node.japanese}</td>
+                                </tr>
+                            {/each}
+                        {:else}
+                            {#each $hanzi.data.hanzi as hanzi}
+                                <tr>
+                                    <td>{hanzi.simplified}</td>
+                                    {#if hanzi.jundaFreq == null}
+                                        <td>n/a</td>
+                                    {:else}
+                                        <td>{hanzi.jundaFreq}</td>
+                                    {/if}
+                                    {#if hanzi.gsNum == null}
+                                        <td>n/a</td>
+                                    {:else}
+                                        <td>{hanzi.gsNum}</td>
+                                    {/if}
+                                    {#if hanzi.hskLvl == null}
+                                        <td>n/a</td>
+                                    {:else}
+                                        <td>{hanzi.hskLvl}</td>
+                                    {/if}
+                                    <td>{hanzi.pinyin}</td>
+                                    <td>{hanzi.traditional}</td>
+                                    <td>{hanzi.japanese}</td>
+                                </tr>
+                            {/each} 
+                        {/if}
+                    </tbody>
+                {/if}
             </table>
         </div>
         <div class="place-self-center mt-3">
-            <Pagination hasPrevPage={hasPrevPage} hasNextPage={hasNextPage} currPage={pageNum}/>
+            <Pagination on:nextpage={nextPage} on:prevpage={prevPage} on:gotopage={toPage} hasPrevPage={hasPrevPage} hasNextPage={hasNextPage} currPage={pageNum}/>
         </div>
     </div>
-    {/if}
 </div>
 
 <style>
