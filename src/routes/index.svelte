@@ -113,7 +113,7 @@
         </h1>
     </div>
 
-    <div class="relative flex flex-col mb-10 h-4/5 w-full">
+    <div class="relative flex flex-col h-5/6 w-full">
         <form class="relative input input-bordered place-self-center mb-3 h-8 max-w-xs w-32 focus-within:ring-1" on:submit|preventDefault={searchHanzi}>
             <input bind:value={searchValue} type="text" placeholder="search" class="w-24 h-6 border-none focus:ring-0">
             <button id="search-btn" class="absolute top-0 opacity-60" type="submit"><Search/></button>
