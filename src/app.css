@@ -1,3 +1,18 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@font-face {
+    font-family: "Kyokasho";
+    src: url("/fonts/japanese/script/dfkyokasho.woff2");
+}
+
+@font-face {
+    font-family: "Simkai";
+    src: url("/fonts/simplified/script/simkai.ttf");
+}
+
+@font-face {
+    font-family: "cwTex Q Kai";
+    src: url("/fonts/traditional/script/cwTeXQKai-Medium.ttf")
+}

@@ -1,7 +1,13 @@
 module.exports = {
   content: ['./src/**/*.{html,js,svelte,ts}'],
   theme: {
-    extend: {},
+    extend: {
+        fontFamily: {
+            kyokasho: ["Kyokasho"],
+            simkai: ["Simkai"],
+            cwtexqkai: ['"cwTex Q Kai"'],
+          },
+    },
   },
   daisyui: {
     themes: ["light", "luxury"]

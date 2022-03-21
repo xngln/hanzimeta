@@ -3,7 +3,6 @@
     import Search from '$lib/icons/search.svelte'
     import X from '$lib/icons/x.svelte'
     import Pagination from '$lib/components/pagination.svelte';
-    import { onMount } from 'svelte';
     import { page } from '$app/stores';
 
     const client = createClient({
@@ -142,7 +141,7 @@
                         {#if datasource == "page"} 
                             {#each $hzPage.data.hanziConnection.edges as edge}
                                 <tr>
-                                    <td>{edge.node.simplified}</td>
+                                    <td class="simplified">{edge.node.simplified}</td>
                                     {#if edge.node.jundaFreq == null}
                                         <td>n/a</td>
                                     {:else}
@@ -159,14 +158,14 @@
                                         <td>{edge.node.hskLvl}</td>
                                     {/if}
                                     <td>{edge.node.pinyin}</td>
-                                    <td>{edge.node.traditional}</td>
-                                    <td>{edge.node.japanese}</td>
+                                    <td class="traditional">{edge.node.traditional}</td>
+                                    <td class="japanese">{edge.node.japanese}</td>
                                 </tr>
                             {/each}
                         {:else}
                             {#each $hanzi.data.hanzi as hanzi}
                                 <tr>
-                                    <td>{hanzi.simplified}</td>
+                                    <td class="simplified">{hanzi.simplified}</td>
                                     {#if hanzi.jundaFreq == null}
                                         <td>n/a</td>
                                     {:else}
@@ -183,8 +182,8 @@
                                         <td>{hanzi.hskLvl}</td>
                                     {/if}
                                     <td>{hanzi.pinyin}</td>
-                                    <td>{hanzi.traditional}</td>
-                                    <td>{hanzi.japanese}</td>
+                                    <td class="traditional">{hanzi.traditional}</td>
+                                    <td class="japanese">{hanzi.japanese}</td>
                                 </tr>
                             {/each} 
                         {/if}
@@ -206,5 +205,19 @@
     #clear-btn {
         top: 5px;
         right: 5px;
+    }
+    .simplified {
+        @apply font-simkai;
+        @apply text-2xl;
+    }
+    .traditional {
+        @apply font-cwtexqkai;
+        font-size: 1.6rem;
+        line-height: 2.1rem;
+    }
+    .japanese {
+        @apply font-kyokasho;
+        font-size: 1.45rem;
+        line-height: 1.95rem;
     }
 </style>
