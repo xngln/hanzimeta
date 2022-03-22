@@ -137,7 +137,7 @@
 
     <div class="relative h-screen flex">
         <div id="content-container" class="mx-auto relative flex flex-col h-5/6">
-            <form class="w-full float-left flex flex-row relative mb-3 place-self-center justify-items-center" on:submit|preventDefault={searchHanzi}>
+            <form class="w-full flex flex-row relative mb-3" on:submit|preventDefault={searchHanzi}>
                 <div class="left-0 relative w-32 h-8 input input-bordered focus-within:ring-1" >
                     <input bind:value={searchValue} type="text" placeholder="search" class="w-24 h-6 border-none focus:ring-0"
                     on:focus={focusSearch} on:blur={blurSearch} on:mouseover={searchMouseOver} on:mouseout={searchMouseOut}>
@@ -154,7 +154,7 @@
                     </label>
                 </div>
             </form>
-            <div id="table-container" class="rounded-lg border-2 overflow-auto overscroll-contain place-self-center float-left">
+            <div id="table-container" class="rounded-lg border-2 overflow-auto overscroll-contain">
                 <table class="table mx-auto">
                     <thead class="sticky top-0">
                         <tr>
@@ -232,7 +232,7 @@
                     {/if}
                 </table>
             </div>
-            <div class="float-left place-self-center mt-3">
+            <div class="place-self-center mt-3">
                 <Pagination on:nextpage={nextPage} on:prevpage={prevPage} on:gotopage={toPage} hasPrevPage={hasPrevPage} hasNextPage={hasNextPage} currPage={pageNum}/>
             </div>
         </div>
