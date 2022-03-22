@@ -232,8 +232,15 @@
                     {/if}
                 </table>
             </div>
-            <div class="place-self-center mt-3">
-                <Pagination on:nextpage={nextPage} on:prevpage={prevPage} on:gotopage={toPage} hasPrevPage={hasPrevPage} hasNextPage={hasNextPage} currPage={pageNum}/>
+            <div class="relative flex justify-center mt-2">
+                {#if datasource == "page" && !$hzPage.fetching}
+                    <div class="absolute text-xs self-center left-2 opacity-40">
+                        {(pageNum-1) * first + 1} to {pageNum * first} of {$hzPage.data.hanziConnection.totalCount}
+                    </div>
+                {/if}
+                <div>
+                    <Pagination on:nextpage={nextPage} on:prevpage={prevPage} on:gotopage={toPage} hasPrevPage={hasPrevPage} hasNextPage={hasNextPage} currPage={pageNum}/>
+                </div>
             </div>
         </div>
     </div>
