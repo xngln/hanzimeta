@@ -104,6 +104,28 @@
         searchValue = "";
         pageNum = pageNumBeforeSearch;
     }
+
+    let hoverClearIcon = false;
+    let focusClearIcon = false;
+    function searchMouseOver() {
+        hoverClearIcon = true;
+    }
+    
+    function searchMouseOut() {
+        hoverClearIcon = false;
+    }
+
+    function focusSearch() {
+        focusClearIcon = true;
+        console.log("doody")
+    }
+
+    function blurSearch() {
+        focusClearIcon = false;
+    }
+    $: showClearIcon = hoverClearIcon || focusClearIcon;
+
+    let hidePinyin = false;
 </script>
 
 <div class="h-screen">
@@ -113,86 +135,106 @@
         </h1>
     </div>
 
-    <div class="relative flex flex-col h-5/6 w-full">
-        <form class="relative input input-bordered place-self-center mb-3 h-8 max-w-xs w-32 focus-within:ring-1" on:submit|preventDefault={searchHanzi}>
-            <input bind:value={searchValue} type="text" placeholder="search" class="w-24 h-6 border-none focus:ring-0">
-            <button id="search-btn" class="absolute top-0 opacity-60" type="submit"><Search/></button>
-            <button id="clear-btn" class="absolute right-0 opacity-50" on:click|preventDefault={clearSearch}><X/></button>
-        </form>
-        <div class="overflow-auto overscroll-contain place-self-center w-4/5">
-            <table class="table mx-auto">
-                <thead class="sticky top-0">
-                    <tr>
-                        <!-- not sure why tailwind inserts '.table th:first-child { position: sticky } if I make thead sticky' -->
-                        <!-- keep this inline style here until I figure that out -->
-                        <th style="position: relative">hanzi</th>
-                        <th >freq.</th>
-                        <th >G.S. #</th>
-                        <th >hsk lvl</th>
-                        <th >pinyin</th>
-                        <th >trad.</th>
-                        <th >kanji</th>
-                    </tr>
-                </thead>
-                {#if $hzPage.fetching}
-                    <p>Loading...</p>
-                {:else}
-                    <tbody>
-                        {#if datasource == "page"} 
-                            {#each $hzPage.data.hanziConnection.edges as edge}
-                                <tr>
-                                    <td class="simplified">{edge.node.simplified}</td>
-                                    {#if edge.node.jundaFreq == null}
-                                        <td>n/a</td>
-                                    {:else}
-                                        <td>{edge.node.jundaFreq}</td>
-                                    {/if}
-                                    {#if edge.node.gsNum == null}
-                                        <td>n/a</td>
-                                    {:else}
-                                        <td>{edge.node.gsNum}</td>
-                                    {/if}
-                                    {#if edge.node.hskLvl == null}
-                                        <td>n/a</td>
-                                    {:else}
-                                        <td>{edge.node.hskLvl}</td>
-                                    {/if}
-                                    <td>{edge.node.pinyin}</td>
-                                    <td class="traditional">{edge.node.traditional}</td>
-                                    <td class="japanese">{edge.node.japanese}</td>
-                                </tr>
-                            {/each}
-                        {:else}
-                            {#each $hanzi.data.hanzi as hanzi}
-                                <tr>
-                                    <td class="simplified">{hanzi.simplified}</td>
-                                    {#if hanzi.jundaFreq == null}
-                                        <td>n/a</td>
-                                    {:else}
-                                        <td>{hanzi.jundaFreq}</td>
-                                    {/if}
-                                    {#if hanzi.gsNum == null}
-                                        <td>n/a</td>
-                                    {:else}
-                                        <td>{hanzi.gsNum}</td>
-                                    {/if}
-                                    {#if hanzi.hskLvl == null}
-                                        <td>n/a</td>
-                                    {:else}
-                                        <td>{hanzi.hskLvl}</td>
-                                    {/if}
-                                    <td>{hanzi.pinyin}</td>
-                                    <td class="traditional">{hanzi.traditional}</td>
-                                    <td class="japanese">{hanzi.japanese}</td>
-                                </tr>
-                            {/each} 
-                        {/if}
-                    </tbody>
-                {/if}
-            </table>
-        </div>
-        <div class="place-self-center mt-3">
-            <Pagination on:nextpage={nextPage} on:prevpage={prevPage} on:gotopage={toPage} hasPrevPage={hasPrevPage} hasNextPage={hasNextPage} currPage={pageNum}/>
+    <div class="relative h-screen flex">
+        <div id="content-container" class="mx-auto relative flex flex-col h-5/6">
+            <form class="w-full float-left flex flex-row relative mb-3 place-self-center justify-items-center" on:submit|preventDefault={searchHanzi}>
+                <div class="left-0 relative w-32 h-8 input input-bordered focus-within:ring-1" >
+                    <input bind:value={searchValue} type="text" placeholder="search" class="w-24 h-6 border-none focus:ring-0"
+                    on:focus={focusSearch} on:blur={blurSearch} on:mouseover={searchMouseOver} on:mouseout={searchMouseOut}>
+                    <button id="search-btn" class="absolute top-0 opacity-60" type="submit"><Search/></button>
+                    <button id="clear-btn" disabled={!showClearIcon} class="absolute right-0 opacity-50 disabled:opacity-0" on:click|preventDefault={clearSearch}>
+                        <X/>
+                    </button>
+                </div>
+
+                <div class="absolute right-0">
+                    <label class="label cursor-pointer">
+                        <span class="label-text">hide pinyin</span> 
+                        <input type="checkbox" bind:checked={hidePinyin} class="ml-2 checkbox checkbox-sm">
+                    </label>
+                </div>
+            </form>
+            <div id="table-container" class="rounded-lg border-2 overflow-auto overscroll-contain place-self-center float-left">
+                <table class="table mx-auto">
+                    <thead class="sticky top-0">
+                        <tr>
+                            <!-- not sure why tailwind inserts '.table th:first-child { position: sticky } if I make thead sticky' -->
+                            <!-- keep this inline style here until I figure that out -->
+                            <th style="position: relative">hanzi</th>
+                            <th >freq.</th>
+                            <th >G.S. #</th>
+                            <th >hsk lvl</th>
+                            {#if !hidePinyin}
+                                <th >pinyin</th>
+                            {/if}
+                            <th >trad.</th>
+                            <th >kanji</th>
+                        </tr>
+                    </thead>
+                    {#if $hzPage.fetching}
+                        <p>Loading...</p>
+                    {:else}
+                        <tbody>
+                            {#if datasource == "page"} 
+                                {#each $hzPage.data.hanziConnection.edges as edge}
+                                    <tr>
+                                        <td class="simplified">{edge.node.simplified}</td>
+                                        {#if edge.node.jundaFreq == null}
+                                            <td>n/a</td>
+                                        {:else}
+                                            <td>{edge.node.jundaFreq}</td>
+                                        {/if}
+                                        {#if edge.node.gsNum == null}
+                                            <td>n/a</td>
+                                        {:else}
+                                            <td>{edge.node.gsNum}</td>
+                                        {/if}
+                                        {#if edge.node.hskLvl == null}
+                                            <td>n/a</td>
+                                        {:else}
+                                            <td>{edge.node.hskLvl}</td>
+                                        {/if}
+                                        {#if !hidePinyin}
+                                            <td>{edge.node.pinyin}</td>
+                                        {/if}
+                                        <td class="traditional">{edge.node.traditional}</td>
+                                        <td class="japanese">{edge.node.japanese}</td>
+                                    </tr>
+                                {/each}
+                            {:else}
+                                {#each $hanzi.data.hanzi as hanzi}
+                                    <tr>
+                                        <td class="simplified">{hanzi.simplified}</td>
+                                        {#if hanzi.jundaFreq == null}
+                                            <td>n/a</td>
+                                        {:else}
+                                            <td>{hanzi.jundaFreq}</td>
+                                        {/if}
+                                        {#if hanzi.gsNum == null}
+                                            <td>n/a</td>
+                                        {:else}
+                                            <td>{hanzi.gsNum}</td>
+                                        {/if}
+                                        {#if hanzi.hskLvl == null}
+                                            <td>n/a</td>
+                                        {:else}
+                                            <td>{hanzi.hskLvl}</td>
+                                        {/if}
+                                        {#if !hidePinyin}
+                                            <td>{hanzi.pinyin}</td>
+                                        {/if}
+                                        <td class="traditional">{hanzi.traditional}</td>
+                                        <td class="japanese">{hanzi.japanese}</td>
+                                    </tr>
+                                {/each} 
+                            {/if}
+                        </tbody>
+                    {/if}
+                </table>
+            </div>
+            <div class="float-left place-self-center mt-3">
+                <Pagination on:nextpage={nextPage} on:prevpage={prevPage} on:gotopage={toPage} hasPrevPage={hasPrevPage} hasNextPage={hasNextPage} currPage={pageNum}/>
+            </div>
         </div>
     </div>
 </div>
@@ -219,5 +261,11 @@
         @apply font-kyokasho;
         font-size: 1.45rem;
         line-height: 1.95rem;
+    }
+    #content-container {
+        display: inline-flex;
+    }
+    #table-container {
+        max-width: 80vw;
     }
 </style>
