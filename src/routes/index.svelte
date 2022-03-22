@@ -138,10 +138,9 @@
     <div class="relative h-screen flex">
         <div id="content-container" class="mx-auto relative flex flex-col h-5/6">
             <form class="w-full flex flex-row relative mb-3" on:submit|preventDefault={searchHanzi}>
-                <div class="left-0 relative w-32 h-8 input input-bordered focus-within:ring-1" >
+                <div class="left-0 relative w-32 h-8 input input-bordered focus-within:ring-1" on:mouseover={searchMouseOver} on:mouseout={searchMouseOut}>
                     <input bind:value={searchValue} type="text" placeholder="search" class="w-24 h-6 border-none focus:ring-0"
-                    on:focus={focusSearch} on:blur={blurSearch} on:mouseover={searchMouseOver} on:mouseout={searchMouseOut}>
-                    <button id="search-btn" class="absolute top-0 opacity-60" type="submit"><Search/></button>
+                    on:focus={focusSearch} on:blur={blurSearch}>
                     <button id="clear-btn" disabled={!showClearIcon} class="absolute right-0 opacity-50 disabled:opacity-0" on:click|preventDefault={clearSearch}>
                         <X/>
                     </button>
