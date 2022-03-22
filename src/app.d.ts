@@ -8,3 +8,9 @@ declare namespace App {
 	// interface Session {}
 	// interface Stuff {}
 }
+
+declare namespace svelte.JSX {
+    interface HTMLAttributes<T> {
+        onoutclick?: (event: any) => any;
+    }
+  }
