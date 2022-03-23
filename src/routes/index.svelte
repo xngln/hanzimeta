@@ -100,7 +100,7 @@
 	$: pageNumBeforeSearch = pageNum;
 
 	function searchHanzi() {
-		$hanzi.variables.searchValue = searchValue;
+		$hanzi.variables.searchValue = searchValue.trim();
 		$hanzi.reexecute();
 		datasource = "search";
 		$hanzi.data.hanzi = $hanzi.data.hanzi;
