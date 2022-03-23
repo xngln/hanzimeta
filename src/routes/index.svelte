@@ -313,11 +313,11 @@
 			</div>
 			<div class="relative flex justify-center mt-2">
 				{#if datasource == "page" && !$hzPage.fetching}
-					<div class="absolute text-xs self-center left-2 opacity-40">
+					<div class="absolute text-xs left-2 top-1 opacity-60">
 						{(pageNum-1) * first + 1} to {pageNum * first} of {$hzPage.data.hanziConnection.totalCount}
 					</div>
 				{/if}
-				<div>
+				<div class="absolute right-2">
 					<Pagination on:nextpage={nextPage} on:prevpage={prevPage} on:gotopage={toPage} hasPrevPage={hasPrevPage} hasNextPage={hasNextPage} currPage={pageNum}/>
 				</div>
 			</div>
