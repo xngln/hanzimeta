@@ -7,6 +7,9 @@
 	import Settings from '$lib/components/settings.svelte';
 	import { page } from '$app/stores';
 	import { clickOutside } from "$lib/functions/clickOutside";
+    import { theme } from '$lib/store';
+
+    theme.init();
 
 	const client = createClient({
 		url: String(import.meta.env.VITE_GQL_API_URL),

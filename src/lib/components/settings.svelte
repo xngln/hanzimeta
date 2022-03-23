@@ -3,7 +3,7 @@
 </script>
 
 <form
-  class="relative w-auto  ml-auto mr-0 bg-white divide-y divide-gray-100 rounded-lg shadow-2xl"
+  class="relative w-auto  ml-auto mr-0 bg-white divide-y divide-gray-100 rounded-lg shadow-2xl dark:bg-black"
   role="dialog"
   aria-label="Settings"
 >
