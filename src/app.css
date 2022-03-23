@@ -16,3 +16,27 @@
     font-family: "cwTex Q Kai";
     src: url("/fonts/traditional/script/cwTeXQKai-Medium.ttf")
 }
+
+@font-face {
+    font-family: 'Noto Sans JP', sans-serif;
+}
+
+@font-face {
+    font-family: 'Noto Sans SC', sans-serif;
+}
+
+@font-face {
+    font-family: 'Noto Sans TC', sans-serif;
+}
+
+@font-face {
+    font-family: 'Noto Serif JP', serif;
+}
+
+@font-face {
+    font-family: 'Noto Serif SC', serif;
+}
+
+@font-face {
+    font-family: 'Noto Serif TC', serif;
+}

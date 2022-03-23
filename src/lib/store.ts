@@ -2,6 +2,7 @@ import { browser } from '$app/env'
 import { writable } from "svelte/store";
 
 export const theme = _theme();
+export const charStyle = _charStyle();
 
 function _theme() {
     const { subscribe, set } = writable('');
@@ -30,6 +31,31 @@ function _theme() {
                 set('light');
                 document.documentElement.classList.add('dark');
             }
-        }
+        },
+    };
+}
+
+function _charStyle() {
+    const { subscribe, set } = writable('');
+
+    return {
+        subscribe,
+        set: (style) => {
+            if (!browser) return;
+            set(style);
+            localStorage.setItem('hzmeta_charstyle', style);
+        },
+        init: () => {
+            if (!browser) return;
+            if (localStorage.hzmeta_charstyle === 'kai') {
+                set('kai');
+            } else if (localStorage.hzmeta_charstyle === 'serif') {
+                set('serif');
+            } else if (localStorage.hzmeta_charstyle === 'sans') {
+                set('sans');
+            } else {
+                set('kai');
+            }
+        },
     };
 }
