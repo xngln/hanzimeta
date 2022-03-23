@@ -209,7 +209,7 @@
 						<input type="checkbox" bind:checked={hidePinyin} class="ml-2 checkbox checkbox-sm">
 					</label> -->
 					{#if showSettings}
-						<div class="z-10 absolute right-10">
+						<div class="z-10 absolute right-7">
 							<Settings></Settings>
 						</div>
 					{/if}

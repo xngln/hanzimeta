@@ -8,11 +8,11 @@
   role="dialog"
   aria-label="Settings"
 >
-  <header class="p-4 text-center">
+  <header class="p-3 text-center">
     <p class="font-medium">Settings</p>
   </header>
 
-  <main class="flow-root px-6 py-3 h-auto">
+  <main class="flow-root px-4 py-3 md:px-6 h-auto">
     <div class="divide-y divide-gray-100">
       <div class="pb-3 pt-0">
         <ThemeToggler/>
@@ -54,7 +54,7 @@
         </fieldset>
       </div>
 
-      <div class="py-3">
+      <div class="pt-3 pb-1 md:pb-2">
         <fieldset>
           <legend class="text-sm font-medium">Character Style</legend>
 
