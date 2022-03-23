@@ -7,9 +7,10 @@
 	import Settings from '$lib/components/settings.svelte';
 	import { page } from '$app/stores';
 	import { clickOutside } from "$lib/functions/clickOutside";
-    import { theme } from '$lib/store';
+    import { theme, charStyle } from '$lib/store';
 
     theme.init();
+    charStyle.init();
 
 	const client = createClient({
 		url: String(import.meta.env.VITE_GQL_API_URL),
@@ -137,6 +138,50 @@
 	function toggleSettings() {
 		showSettings = !showSettings;
 	}
+
+    function getFontClass(style, lang) {
+        switch(style) {
+            case "kai": {
+                switch(lang) {
+                    case "sc": {
+                        return "font-simkai kai";
+                    }
+                    case "tc": {
+                        return "font-cwtexqkai kai";
+                    }
+                    case "jp": {
+                        return "font-kyokasho kai";
+                    }
+                }
+            }
+            case "sans": {
+                switch(lang) {
+                    case "sc": {
+                        return "font-notosanssc";
+                    }
+                    case "tc": {
+                        return "font-notosanstc";
+                    }
+                    case "jp": {
+                        return "font-notosansjp";
+                    }
+                }
+            }
+            case "serif": {
+                switch(lang) {
+                    case "sc": {
+                        return "font-notoserifsc";
+                    }
+                    case "tc": {
+                        return "font-notoseriftc";
+                    }
+                    case "jp": {
+                        return "font-notoserifjp";
+                    }
+                }
+            }
+        }
+    }
 </script>
 
 <div class="h-screen">
@@ -194,7 +239,7 @@
 							{#if datasource == "page"} 
 								{#each $hzPage.data.hanziConnection.edges as edge}
 									<tr>
-										<td class="simplified">{edge.node.simplified}</td>
+										<td class="simplified text-xl {getFontClass($charStyle, 'sc')}">{edge.node.simplified}</td>
 										{#if edge.node.jundaFreq == null}
 											<td>n/a</td>
 										{:else}
@@ -213,8 +258,8 @@
 										{#if !hidePinyin}
 											<td>{edge.node.pinyin}</td>
 										{/if}
-										<td class="traditional">{edge.node.traditional}</td>
-										<td class="japanese">{edge.node.japanese}</td>
+										<td class="traditional text-xl {getFontClass($charStyle, 'tc')}">{edge.node.traditional}</td>
+										<td class="japanese text-xl {getFontClass($charStyle, 'jp')}">{edge.node.japanese}</td>
 									</tr>
 								{/each}
 							{:else}
@@ -271,24 +316,26 @@
 		top: 5px;
 		right: 5px;
 	}
-	.simplified {
-		@apply font-simkai;
-		@apply text-2xl;
-	}
-	.traditional {
-		@apply font-cwtexqkai;
-		font-size: 1.6rem;
-		line-height: 2.1rem;
-	}
-	.japanese {
-		@apply font-kyokasho;
-		font-size: 1.45rem;
-		line-height: 1.95rem;
-	}
 	#content-container {
 		display: inline-flex;
 	}
 	#table-container {
 		max-width: 80vw;
 	}
+
+	.simplified.kai {
+		@apply text-2xl;
+	}
+	.traditional.kai {
+		font-size: 1.6rem;
+		line-height: 2.1rem;
+	}
+	.japanese.kai{
+		font-size: 1.45rem;
+		line-height: 1.95rem;
+	}
+    .simplified, .traditional, .japanese {
+        @apply font-light;
+    }
+
 </style>
