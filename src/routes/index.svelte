@@ -265,7 +265,7 @@
 							{:else}
 								{#each $hanzi.data.hanzi as hanzi}
 									<tr>
-										<td class="simplified">{hanzi.simplified}</td>
+										<td class="simplified text-xl {getFontClass($charStyle, 'sc')}">{hanzi.simplified}</td>
 										{#if hanzi.jundaFreq == null}
 											<td>n/a</td>
 										{:else}
@@ -284,8 +284,8 @@
 										{#if !hidePinyin}
 											<td>{hanzi.pinyin}</td>
 										{/if}
-										<td class="traditional">{hanzi.traditional}</td>
-										<td class="japanese">{hanzi.japanese}</td>
+										<td class="traditional text-xl {getFontClass($charStyle, 'tc')}">{hanzi.traditional}</td>
+										<td class="japanese text-xl {getFontClass($charStyle, 'jp')}">{hanzi.japanese}</td>
 									</tr>
 								{/each} 
 							{/if}
