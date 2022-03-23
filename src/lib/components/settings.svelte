@@ -1,6 +1,7 @@
 <script lang="ts">
     import ThemeToggler from "$lib/components/themeToggler.svelte";
-    import { charStyle } from "$lib/store"
+    import { charStyle, columns } from "$lib/store"
+
 </script>
 
 <form
@@ -20,33 +21,33 @@
 
       <div class="py-3">
         <fieldset>
-          <legend class="text-sm font-medium">Show/Hide Columns</legend>
+          <legend class="text-sm font-medium">Toggle Columns</legend>
 
           <ul class="grid gap-3 mt-3 grid-cols-2">
             <li>
               <label class="flex items-center text-sm">
-                <input type="checkbox" class="w-4 h-4 border border-gray-200 rounded-md" />
+                <input type="checkbox" bind:checked={$columns.showPinyin} class="w-4 h-4 border border-gray-200 rounded-md" />
                 <span class="ml-3 text-xs">Pinyin</span>
               </label>
             </li>
 
             <li>
               <label class="flex items-center text-sm">
-                <input type="checkbox" class="w-4 h-4 border border-gray-200 rounded-md" />
+                <input type="checkbox" bind:checked={$columns.showTC} class="w-4 h-4 border border-gray-200 rounded-md" />
                 <span class="ml-3 text-xs">Traditional</span>
               </label>
             </li>
 
             <li>
               <label class="flex items-center text-sm">
-                <input type="checkbox" class="w-4 h-4 border border-gray-200 rounded-md" />
+                <input type="checkbox" bind:checked={$columns.showJP} class="w-4 h-4 border border-gray-200 rounded-md" />
                 <span class="ml-3 text-xs">Japanese</span>
               </label>
             </li>
 
             <li>
               <label class="flex items-center text-sm">
-                <input type="checkbox" class="w-4 h-4 border border-gray-200 rounded-md" />
+                <input type="checkbox" bind:checked={$columns.showSC} class="w-4 h-4 border border-gray-200 rounded-md" />
                 <span class="ml-3 text-xs">Simplified</span>
               </label>
             </li>

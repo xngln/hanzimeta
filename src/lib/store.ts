@@ -3,6 +3,39 @@ import { writable } from "svelte/store";
 
 export const theme = _theme();
 export const charStyle = _charStyle();
+export const columns = _columns();
+
+function _columns() {
+    const { subscribe, set } = writable({
+        showPinyin: true,
+        showTC: true,
+        showJP: true,
+        showSC: true,
+    });
+
+    return {
+        subscribe,
+        set: (newColumns) => {
+            set(newColumns);
+            localStorage.hzmeta_columns = JSON.stringify(newColumns);
+        },
+        init: () => {
+            if (!browser) return;
+            if ('hzmeta_columns' in localStorage) {
+               set(JSON.parse(localStorage.hzmeta_columns));
+               return;
+            }
+            let columnSettings = {
+                showPinyin: true,
+                showTC: true,
+                showJP: true,
+                showSC: true,
+            }
+            set(columnSettings);
+            localStorage.hzmeta_columns = JSON.stringify(columnSettings);
+        }
+    }
+}
 
 function _theme() {
     const { subscribe, set } = writable('');

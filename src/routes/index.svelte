@@ -7,10 +7,11 @@
 	import Settings from '$lib/components/settings.svelte';
 	import { page } from '$app/stores';
 	import { clickOutside } from "$lib/functions/clickOutside";
-    import { theme, charStyle } from '$lib/store';
+    import { theme, charStyle, columns } from '$lib/store';
 
     theme.init();
     charStyle.init();
+    columns.init();
 
 	const client = createClient({
 		url: String(import.meta.env.VITE_GQL_API_URL),
@@ -133,7 +134,6 @@
 	$: showClearIcon = hoverClearIcon || focusClearIcon;
 
 	let showSettings = false;
-	let hidePinyin = false;
 
 	function toggleSettings() {
 		showSettings = !showSettings;
@@ -221,15 +221,21 @@
 						<tr>
 							<!-- not sure why tailwind inserts '.table th:first-child { position: sticky } if I make thead sticky' -->
 							<!-- keep this inline style here until I figure that out -->
-							<th style="position: relative">hanzi</th>
+                            {#if $columns.showSC}
+                                <th style="position: relative">hanzi</th>
+                            {/if}
 							<th >freq.</th>
 							<th >G.S. #</th>
 							<th >hsk lvl</th>
-							{#if !hidePinyin}
+							{#if $columns.showPinyin}
 								<th >pinyin</th>
 							{/if}
-							<th >trad.</th>
-							<th >kanji</th>
+                            {#if $columns.showTC}
+                                <th >trad.</th>
+                            {/if}
+                            {#if $columns.showJP}
+                                <th >kanji</th>
+                            {/if}
 						</tr>
 					</thead>
 					{#if $hzPage.fetching}
@@ -239,7 +245,9 @@
 							{#if datasource == "page"} 
 								{#each $hzPage.data.hanziConnection.edges as edge}
 									<tr>
-										<td class="simplified text-xl {getFontClass($charStyle, 'sc')}">{edge.node.simplified}</td>
+                                        {#if $columns.showSC}
+                                            <td class="simplified text-xl {getFontClass($charStyle, 'sc')}">{edge.node.simplified}</td>
+                                        {/if}
 										{#if edge.node.jundaFreq == null}
 											<td>n/a</td>
 										{:else}
@@ -255,17 +263,23 @@
 										{:else}
 											<td>{edge.node.hskLvl}</td>
 										{/if}
-										{#if !hidePinyin}
+										{#if $columns.showPinyin}
 											<td>{edge.node.pinyin}</td>
 										{/if}
-										<td class="traditional text-xl {getFontClass($charStyle, 'tc')}">{edge.node.traditional}</td>
-										<td class="japanese text-xl {getFontClass($charStyle, 'jp')}">{edge.node.japanese}</td>
+                                        {#if $columns.showTC}
+                                            <td class="traditional text-xl {getFontClass($charStyle, 'tc')}">{edge.node.traditional}</td>
+                                        {/if}
+                                        {#if $columns.showJP}
+                                            <td class="japanese text-xl {getFontClass($charStyle, 'jp')}">{edge.node.japanese}</td>
+                                        {/if}
 									</tr>
 								{/each}
 							{:else}
 								{#each $hanzi.data.hanzi as hanzi}
 									<tr>
-										<td class="simplified text-xl {getFontClass($charStyle, 'sc')}">{hanzi.simplified}</td>
+                                        {#if $columns.showSC}
+                                            <td class="simplified text-xl {getFontClass($charStyle, 'sc')}">{hanzi.simplified}</td>
+                                        {/if}
 										{#if hanzi.jundaFreq == null}
 											<td>n/a</td>
 										{:else}
@@ -281,11 +295,15 @@
 										{:else}
 											<td>{hanzi.hskLvl}</td>
 										{/if}
-										{#if !hidePinyin}
+										{#if $columns.showPinyin}
 											<td>{hanzi.pinyin}</td>
 										{/if}
-										<td class="traditional text-xl {getFontClass($charStyle, 'tc')}">{hanzi.traditional}</td>
-										<td class="japanese text-xl {getFontClass($charStyle, 'jp')}">{hanzi.japanese}</td>
+                                        {#if $columns.showTC}
+                                            <td class="traditional text-xl {getFontClass($charStyle, 'tc')}">{hanzi.traditional}</td>
+                                        {/if}
+                                        {#if $columns.showJP}
+                                            <td class="japanese text-xl {getFontClass($charStyle, 'jp')}">{hanzi.japanese}</td>
+                                        {/if}
 									</tr>
 								{/each} 
 							{/if}
