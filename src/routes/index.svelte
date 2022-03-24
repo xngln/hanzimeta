@@ -97,13 +97,14 @@
 		pageNum = parseInt(event.detail.page);
 	}
 
-	$: pageNumBeforeSearch = pageNum;
+	let pageNumBeforeSearch = pageNum;
 
 	function searchHanzi() {
 		$hanzi.variables.searchValue = searchValue.trim();
 		$hanzi.reexecute();
 		datasource = "search";
 		$hanzi.data.hanzi = $hanzi.data.hanzi;
+        pageNumBeforeSearch = pageNum;
 		pageNum = 1;
 	}
 
@@ -318,7 +319,7 @@
 					</div>
 				{/if}
 				<div class="absolute right-2">
-					<Pagination on:nextpage={nextPage} on:prevpage={prevPage} on:gotopage={toPage} hasPrevPage={hasPrevPage} hasNextPage={hasNextPage} currPage={pageNum}/>
+					<Pagination on:nextpage={nextPage} on:prevpage={prevPage} on:gotopage={toPage} hasPrevPage={datasource === "page" ? hasPrevPage : false} hasNextPage={datasource === "page" ? hasNextPage : false} currPage={pageNum}/>
 				</div>
 			</div>
 		</div>
